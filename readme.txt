@@ -1,6 +1,6 @@
 === Video Short Code ===
 Contributors: caijiamx
-Tags: video, short code, youku, ku6, tudou
+Tags: video, short code, youku, ku6, tudou,sohu,qq,letv,56
 Requires at least: 2.8
 Tested up to: 4.0
 Stable tag: 1.1
@@ -11,7 +11,16 @@ This plugin only for some chinese video site.
 
 == Description ==
 
-This plugin can  insert video quikly width short code ,specially for some chinese video sites, like  youku.com,tudou.com,ku6.com.
+This plugin can  insert video quickly width short code ,specially for some chinese video sites, like  youku.com,tudou.com,ku6.com,v.qq.com,letv.com,56.com,tv.sohu.com.
+
+support video site:
+* [Youku](http://www.youku.com "优酷")
+* [Tudou](http://www.tudou.com "土豆")
+* [Sohu](http://tv.sohu.com "搜狐")
+* [QQ](http://v.qq.com "QQ视频")
+* [Ku6](http://www.ku6.com "Ku6")
+* [Letv](http://www.letv.com "乐视")
+* [56](http://www.56.com "56")
 
 = Related Links =
 
@@ -44,6 +53,7 @@ and open an [issue](https://github.com/caijiamx/video-short-code/issues).
 * Rename plugin to Video Short Code.
 * Update plugin compatible to WordPress 4.0.
 * Rewrite plugin to OOP class.
+* support more video site with short code.
 
 = Version 1.0 - 5 April 2012 =
 * Initial Release

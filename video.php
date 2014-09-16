@@ -1,11 +1,11 @@
 <?php 
 /**
-Plugin Name: Video Short Code
-Plugin URI: https://github.com/caijiamx/video-short-code
-Description: This plugin can  insert video quikly width shortcode ,specially for some chinese video sites, like  youku.com,tudou.com,ku6.com.
-Author: Matt
-Version: 1.1
-Author URI: http://www.xbc.me
+ * Plugin Name: Video Short Code
+ * Plugin URI: https://github.com/caijiamx/video-short-code
+ * Description: This plugin can  insert video quikly width shortcode ,specially for some chinese video sites, like  youku.com,tudou.com,ku6.com.
+ * Author: Matt
+ * Version: 1.1
+ * Author URI: http://www.xbc.me
 */
 
 class VideoShortCode{

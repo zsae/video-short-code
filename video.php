@@ -25,6 +25,36 @@ class VideoShortCode{
         'letv'    => 'http://i7.imgs.letv.com/player/swfPlayer.swf?id={code}&autoplay=0',
         '56com'   => 'http://player.56.com/v_{code}.swf',
     );
+    private $_regexs = array(
+        'youku'   => array(
+            'regex' => '/http:\/\/v\.youku\.com\/v_show\/id_(\w+)\.html(\?from=(.*)+)?/',
+            'count' => 1,
+        ),
+        'tudou'   => array(
+            'regex' => '/http:\/\/www\.tudou\.com\/listplay\/(\w+)\/(\w+)\.html/',
+            'count' => 1,
+        ),
+        'ku6'     => array(
+            'regex' => '/http:\/\/v\.ku6\.com\/show\/(\w+\.\.)\.html(\?hpsrc=(\w+))?/',
+            'count' => 1,
+        ),
+        'tvsohu'  => array(
+            'regex' => '',
+            'count' => 0,
+        ),
+        'vqq'     => array(
+            'regex' => '/http:\/\/v\.qq\.com\/cover\/n\/(\w+)\.html\?vid=(\w+)/',
+            'count' => 2,
+        ),
+        'letv'    => array(
+            'regex' => '/http:\/\/www\.letv\.com\/ptv\/vplay\/(\w+)\.html/',
+            'count' => 1,
+        ),
+        '56com'   => array(
+            'regex' => '/http:\/\/www\.56\.com\/u12\/v_(\w+)\.html/',
+            'count' => 1,
+        ),
+    );
 
     public function __construct(){
         add_action( 'admin_notices', array( $this, 'getNotices' ) );
@@ -57,6 +87,7 @@ class VideoShortCode{
             add_shortcode('vqq', array($this , 'play_vqq'));
             add_shortcode('letv', array($this , 'play_letv'));
             add_shortcode('56com', array($this , 'play_56com'));
+            add_filter( 'content_save_pre', array($this , 'saveContentBefore'), 10, 1 );
         }
     }
 
@@ -114,6 +145,21 @@ class VideoShortCode{
             return $flash ;
         }
         return '';
+    }
+
+    public function saveContentBefore($content){
+        foreach ($this->_regexs as $key => $value) {
+            $regex = $value['regex'];
+            if($value && $regex){
+                $count = $value['count'];
+                $replace = '[' . $key . " code='\${" . $count . "}']";
+                $content = preg_replace( $regex, $replace , $content);
+                $this->loger('$regex = ' . $regex , __FUNCTION__);
+                $this->loger('$replace = ' . $replace , __FUNCTION__);
+                $this->loger('$content = ' . $content , __FUNCTION__);
+            }
+        }
+        return $content;
     }
 
     public function error($msg = ''){

@@ -35,7 +35,7 @@ class VideoShortCode{
             'count' => 1,
         ),
         'ku6'     => array(
-            'regex' => '/http:\/\/v\.ku6\.com\/show\/(\w+\.\.)\.html(\?hpsrc=(\w+))?/',
+            'regex' => '/http:\/\/v\.ku6\.com\/show\/([-\w]+\.\.)\.html(\?hpsrc=(\w+))?/',
             'count' => 1,
         ),
         'tvsohu'  => array(
@@ -43,16 +43,16 @@ class VideoShortCode{
             'count' => 0,
         ),
         'vqq'     => array(
-            'regex' => '/http:\/\/v\.qq\.com\/cover\/n\/(\w+)\.html\?vid=(\w+)/',
-            'count' => 2,
+            'regex' => '/http:\/\/v\.qq\.com\/cover\/(\w+)\/(\w+)\.html\?vid=(\w+)/',
+            'count' => 3,
         ),
         'letv'    => array(
-            'regex' => '/http:\/\/www\.letv\.com\/ptv\/vplay\/(\w+)\.html/',
+            'regex' => '/http:\/\/www\.letv\.com\/ptv\/vplay\/(\w+)\.html(\?ref=(\w+))?/',
             'count' => 1,
         ),
         '56com'   => array(
-            'regex' => '/http:\/\/www\.56\.com\/u12\/v_(\w+)\.html/',
-            'count' => 1,
+            'regex' => '/http:\/\/www\.56\.com\/(\w+)\/v_(\w+)\.html/',
+            'count' => 2,
         ),
     );
 

@@ -20,7 +20,7 @@ class VideoShortCode{
         'youku'   => 'http://player.youku.com/player.php/sid/{code}/v.swf',
         'tudou'   => 'http://www.tudou.com/a/{code}/v.swf',
         'ku6'     => 'http://player.ku6.com/refer/{code}/v.swf',
-        'tvsohu'  => 'http://share.vrs.sohu.com/v.swf?plid={code}&topBar=1&autoplay=false&pub_catecode=0&from=page',
+        'tvsohu'  => 'http://share.vrs.sohu.com/{code}/v.swf?topBar=1&autoplay=false&pub_catecode=0&from=page',
         'vqq'     => 'http://static.video.qq.com/TPout.swf?vid={code}&auto=0',
         'letv'    => 'http://i7.imgs.letv.com/player/swfPlayer.swf?id={code}&autoplay=0',
         '56com'   => 'http://player.56.com/v_{code}.swf',
@@ -64,31 +64,31 @@ class VideoShortCode{
         return $this->_call(__FUNCTION__ , $atts);
     }
 
-    public function play_tudou(){
+    public function play_tudou($atts){
         return $this->_call(__FUNCTION__ , $atts);
     }
 
-    public function play_ku6(){
+    public function play_ku6($atts){
         return $this->_call(__FUNCTION__ , $atts);
     }
 
-    public function play_youtube(){
+    public function play_youtube($atts){
         return $this->_call(__FUNCTION__ , $atts);
     }
 
-    public function play_tvsohu(){
+    public function play_tvsohu($atts){
         return $this->_call(__FUNCTION__ , $atts);
     }
 
-    public function play_vqq(){
+    public function play_vqq($atts){
         return $this->_call(__FUNCTION__ , $atts);
     }
 
-    public function play_letv(){
+    public function play_letv($atts){
         return $this->_call(__FUNCTION__ , $atts);
     }
 
-    public function play_56com(){
+    public function play_56com($atts){
         return $this->_call(__FUNCTION__ , $atts);
     }
 
@@ -106,7 +106,7 @@ class VideoShortCode{
         $data   = str_replace('{code}', $code, $data);
         $flash = '<object width="'.$width.'" height="'.$height.'" type="application/x-shockwave-flash" data="' . $data .'"><param name="quality" value="high"><param name="allowScriptAccess" value="always"><param name="flashvars" value="playMovie=true&isAutoPlay=true"></object>';
         $this->loger('$name = ' . $name , __FUNCTION__);
-        $this->loger('$atts = ' . $atts , __FUNCTION__);
+        $this->loger($atts , __FUNCTION__);
         $this->loger('$type = ' . $type , __FUNCTION__);
         $this->loger('$code = ' . $code , __FUNCTION__);
         $this->loger('$data = ' . $data , __FUNCTION__);

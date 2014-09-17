@@ -20,7 +20,7 @@ class VideoShortCode{
         'youku'   => 'http://player.youku.com/player.php/sid/{code}/v.swf',
         'tudou'   => 'http://www.tudou.com/a/{code}/v.swf',
         'ku6'     => 'http://player.ku6.com/refer/{code}/v.swf',
-        'tvsohu'  => 'http://share.vrs.sohu.com/{code}/v.swf?topBar=1&autoplay=false&pub_catecode=0&from=page',
+        'tvsohu'  => 'http://share.vrs.sohu.com/{code}/v.swf&topBar=1&autoplay=false&pub_catecode=0&from=page',
         'vqq'     => 'http://static.video.qq.com/TPout.swf?vid={code}&auto=0',
         'letv'    => 'http://i7.imgs.letv.com/player/swfPlayer.swf?id={code}&autoplay=0',
         '56com'   => 'http://player.56.com/v_{code}.swf',

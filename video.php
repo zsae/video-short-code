@@ -8,46 +8,137 @@
  * Author URI: http://www.xbc.me
 */
 
+define('VIDEO_SHORT_CODE_PLUGIN_DIR', plugin_dir_path( __FILE__ ));
+define('VIDEO_SHORT_CODE_PLUGIN_URL', plugin_dir_url( __FILE__ ));
+
 class VideoShortCode{
+    public $debug        = true;
+    private $_optionKey  = 'video_short_code_notices';
+    private $_textDomain = 'video_short_code';
+    private $_logFile    = 'video_short_code.log';
     private $_object = array(
         'youku'   => 'http://player.youku.com/player.php/sid/{code}/v.swf',
-        'tudou'   => 'http://www.tudou.com/v/{code}/v.swf',
+        'tudou'   => 'http://www.tudou.com/a/{code}/v.swf',
         'ku6'     => 'http://player.ku6.com/refer/{code}/v.swf',
-        'tvsohu'  => 'http://share.vrs.sohu.com/{code}/v.swf',
+        'tvsohu'  => 'http://share.vrs.sohu.com/v.swf?plid={code}&topBar=1&autoplay=false&pub_catecode=0&from=page',
         'vqq'     => 'http://static.video.qq.com/TPout.swf?vid={code}&auto=0',
         'letv'    => 'http://i7.imgs.letv.com/player/swfPlayer.swf?id={code}&autoplay=0',
         '56com'   => 'http://player.56.com/v_{code}.swf',
     );
+
     public function __construct(){
-        add_shortcode('youku', array($this , 'play_youku'));
-        add_shortcode('tudou', array($this , 'play_tudou'));
-        add_shortcode('ku6', array($this , 'play_ku6'));
-        add_shortcode('youtube', array($this , 'play_youtube'));
-        add_shortcode('tvsohu', array($this , 'play_tvsohu'));
-        add_shortcode('vqq', array($this , 'play_vqq'));
-        add_shortcode('letv', array($this , 'play_letv'));
-        add_shortcode('56com', array($this , 'play_56com'));
+        add_action( 'admin_notices', array( $this, 'getNotices' ) );
+    }
+
+    public function checkRequire(){
+        $result = true;
+        $check_functons = array(
+            'file_put_contents',
+            'preg_match',
+        );
+        foreach ($check_functons as $function) {
+            if(!function_exists($function)){
+                $this->error("$function 被禁用，请检查您的服务器是否支持该函数！");
+                $result = false;
+            }
+        }
+        return $result;
     }
 
     public function run(){
-
+        $result = $this->checkRequire();
+        if($result){
+            $this->_logFile    = VIDEO_SHORT_CODE_PLUGIN_DIR . $this->_logFile;
+            $this->loger('$this->_logFile = ' . $this->_logFile , __FUNCTION__);
+            add_shortcode('youku', array($this , 'play_youku'));
+            add_shortcode('tudou', array($this , 'play_tudou'));
+            add_shortcode('ku6', array($this , 'play_ku6'));
+            add_shortcode('tvsohu', array($this , 'play_tvsohu'));
+            add_shortcode('vqq', array($this , 'play_vqq'));
+            add_shortcode('letv', array($this , 'play_letv'));
+            add_shortcode('56com', array($this , 'play_56com'));
+        }
     }
 
-    public function __call($name, $arguments){
-        $atts = $arguments[0];
+    public function play_youku($atts){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
+    public function play_tudou(){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
+    public function play_ku6(){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
+    public function play_youtube(){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
+    public function play_tvsohu(){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
+    public function play_vqq(){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
+    public function play_letv(){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
+    public function play_56com(){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
+    private function _call($name, $atts){
         $type = str_replace('play_', '', $name);
-        extract(shortcode_atts(array(
-        'code'=>'',
-        'width'=>'480',
-        'height'=>'400'
-        ),$atts));
-        $data = $this->_object($type);
-        $data = str_replace('{code}', $code, $data);
+        $atts = shortcode_atts(array(
+            'code'   =>'',
+            'width'  =>'480',
+            'height' =>'400'
+        ),$atts);
+        $code   = $atts['code'];
+        $width  = $atts['width'];
+        $height = $atts['height'];
+        $data   = $this->_object[$type];
+        $data   = str_replace('{code}', $code, $data);
         $flash = '<object width="'.$width.'" height="'.$height.'" type="application/x-shockwave-flash" data="' . $data .'"><param name="quality" value="high"><param name="allowScriptAccess" value="always"><param name="flashvars" value="playMovie=true&isAutoPlay=true"></object>';
+        $this->loger('$name = ' . $name , __FUNCTION__);
+        $this->loger('$atts = ' . $atts , __FUNCTION__);
+        $this->loger('$type = ' . $type , __FUNCTION__);
+        $this->loger('$code = ' . $code , __FUNCTION__);
+        $this->loger('$data = ' . $data , __FUNCTION__);
         if(is_single()){
             return $flash ;
         }
         return '';
+    }
+
+    public function error($msg = ''){
+        $notices= get_option($this->_optionKey, array());
+        $notices[] = __($msg , $this->_textDomain);
+        update_option($this->_optionKey, $notices);
+    }
+
+    public function getNotices(){
+        if ($notices= get_option($this->_optionKey)) {
+            foreach ($notices as $notice) {
+              echo "<div class='error'><p>$notice</p></div>";
+            }
+            delete_option($this->_optionKey);
+        }
+    }
+
+    public function loger($data , $func){
+        if($this->debug){
+            $data = "$func : " . var_export($data ,true) . "\n";
+            $f = file_put_contents($this->_logFile, $data , FILE_APPEND | LOCK_EX);
+            if($f === false){
+                $this->error('写入日志文件失败');
+            }
+        }
     }
 }
 

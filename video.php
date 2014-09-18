@@ -12,7 +12,7 @@ define('VIDEO_SHORT_CODE_PLUGIN_DIR', plugin_dir_path( __FILE__ ));
 define('VIDEO_SHORT_CODE_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 
 class VideoShortCode{
-    public $debug        = true;
+    public $debug        = false;
     private $_optionKey  = 'video_short_code_notices';
     private $_textDomain = 'video_short_code';
     private $_logFile    = 'video_short_code.log';

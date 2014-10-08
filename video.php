@@ -4,12 +4,9 @@
  * Plugin URI: https://github.com/caijiamx/video-short-code
  * Description: This plugin can  insert video quikly width shortcode ,specially for some chinese video sites, like  youku.com,tudou.com,ku6.com.
  * Author: Matt
- * Version: 1.1
+ * Version: 1.2
  * Author URI: http://www.xbc.me
 */
-
-define('VIDEO_SHORT_CODE_PLUGIN_DIR', plugin_dir_path( __FILE__ ));
-define('VIDEO_SHORT_CODE_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 
 class VideoShortCode{
     public $debug        = false;
@@ -54,6 +51,14 @@ class VideoShortCode{
             'regex' => '/http:\/\/www\.56\.com\/(\w+)\/v_(\w+)\.html/',
             'count' => 2,
         ),
+        'yyt'   => array(
+            'regex' => '/http:\/\/v\.yinyuetai\.com\/video\/(\d+)/',
+            'count' => 1,
+        ),
+    );
+    private $_template = array(
+        'object' => '<object width="%d" height="%d" type="application/x-shockwave-flash" data="%s"><param name="quality" value="high"><param name="allowScriptAccess" value="always"><param name="flashvars" value="playMovie=true&isAutoPlay=true"></object>',
+        'embed' => '<div style="width:%d;height:%d;"><embed pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="100%" height="100%" flashvars="local=true&amp;amovid=5f4ffbc12418024&amp;refererdomain=yinyuetai.com&amp;domain=yinyuetai.com&amp;videoId=%d&amp;showlyrics=false&amp;capturevideoavailable=true&amp;sendsnaplog=true&amp;usepromptbar=true&amp;popupwin=true&amp;markerlocation=http%3A%2F%2Fs.yytcdn.com%2Fswf%2Fcommon%2Fmarker.%245234b9.swf&amp;preamovid=true&amp;showadvipbutton=true&amp;swflocation=http%3A%2F%2Fs.yytcdn.com%2Fswf%2Fcommon%2Fmvplayer.%2467fa6a.swf" bgcolor="#000000" allowfullscreen="true" allowscriptaccess="always" wmode="window" id="yinyuetaiplayer" name="yinyuetaiplayer" src="http://s.yytcdn.com/swf/common/playerloader.$f92adc.swf"></div>',
     );
 
     public function __construct(){
@@ -78,7 +83,10 @@ class VideoShortCode{
     public function run(){
         $result = $this->checkRequire();
         if($result){
-            $this->_logFile    = VIDEO_SHORT_CODE_PLUGIN_DIR . $this->_logFile;
+            //初始化相关插件信息
+            $plugin_dir        = plugin_dir_path( __FILE__ );
+            $plugin_url        = plugin_dir_url( __FILE__ );
+            $this->_logFile    = $plugin_dir . $this->_logFile;
             $this->loger('$this->_logFile = ' . $this->_logFile , __FUNCTION__);
             add_shortcode('youku', array($this , 'play_youku'));
             add_shortcode('tudou', array($this , 'play_tudou'));
@@ -87,6 +95,7 @@ class VideoShortCode{
             add_shortcode('vqq', array($this , 'play_vqq'));
             add_shortcode('letv', array($this , 'play_letv'));
             add_shortcode('56com', array($this , 'play_56com'));
+            add_shortcode('yyt', array($this , 'play_yyt'));
             add_filter( 'content_save_pre', array($this , 'saveContentBefore'), 10, 1 );
         }
     }
@@ -123,6 +132,10 @@ class VideoShortCode{
         return $this->_call(__FUNCTION__ , $atts);
     }
 
+    public function play_yyt($atts){
+        return $this->_call(__FUNCTION__ , $atts);
+    }
+
     private function _call($name, $atts){
         $type = str_replace('play_', '', $name);
         $atts = shortcode_atts(array(
@@ -133,9 +146,15 @@ class VideoShortCode{
         $code   = $atts['code'];
         $width  = $atts['width'];
         $height = $atts['height'];
-        $data   = $this->_object[$type];
-        $data   = str_replace('{code}', $code, $data);
-        $flash = '<object width="'.$width.'" height="'.$height.'" type="application/x-shockwave-flash" data="' . $data .'"><param name="quality" value="high"><param name="allowScriptAccess" value="always"><param name="flashvars" value="playMovie=true&isAutoPlay=true"></object>';
+        if($type == 'yyt'){
+            $template = $this->_template['embed'];
+            $data     = $code;
+        }else{
+            $template = $this->_template['object'];
+            $data     = $this->_object[$type];
+            $data     = str_replace('{code}', $code, $data);
+        }
+        $flash = sprintf($template , $width , $height , $data);
         $this->loger('$name = ' . $name , __FUNCTION__);
         $this->loger($atts , __FUNCTION__);
         $this->loger('$type = ' . $type , __FUNCTION__);
@@ -152,7 +171,8 @@ class VideoShortCode{
             $regex = $value['regex'];
             if($value && $regex){
                 $count = $value['count'];
-                $replace = '[' . $key . " code='\${" . $count . "}']";
+                $format  = '[%s code=\'${%d}\']';
+                $replace = sprintf($format , $key , $count);
                 $content = preg_replace( $regex, $replace , $content);
                 $this->loger('$regex = ' . $regex , __FUNCTION__);
                 $this->loger('$replace = ' . $replace , __FUNCTION__);
